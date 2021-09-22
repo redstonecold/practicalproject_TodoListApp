@@ -1,6 +1,10 @@
 package com.todo;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Scanner;
+
+import org.w3c.dom.ls.LSOutput;
 
 import com.todo.dao.TodoList;
 import com.todo.menu.Menu;
@@ -9,59 +13,79 @@ import com.todo.service.TodoUtil;
 public class TodoMain {
 	
 	public static void start() {
-	
-		Scanner sc = new Scanner(System.in);
-		TodoList l = new TodoList();
-		boolean isList = false;
-		boolean quit = false;
-		do {
-			Menu.displaymenu();
-			isList = false;
-			String choice = sc.next();
-			switch (choice) {
+		
+		try {
 
-			case "add":
-				TodoUtil.createItem(l);
-				break;
+			BufferedReader bf = new BufferedReader(new InputStreamReader(System.in)); //선언
+			TodoList l = new TodoList();
+			boolean isList = false;
+			boolean quit = false;
+			String filename = "todolist.txt";
 			
-			case "del":
-				TodoUtil.deleteItem(l);
-				break;
+			System.out.println(filename + "을(를) 로드합니다.");
+			TodoUtil.loadList(l, filename);
+			do {
+				Menu.prompt();
+				isList = false;
+				String choice = bf.readLine();
+				switch (choice) {
+
+				case "add":
+					TodoUtil.createItem(l);
+					break;
 				
-			case "edit":
-				TodoUtil.updateItem(l);
-				break;
+				case "del":
+					TodoUtil.deleteItem(l);
+					break;
+					
+				case "edit":
+					TodoUtil.updateItem(l);
+					break;
 				
-			case "ls":
-				TodoUtil.listAll(l);
-				break;
+				case "help" :
+					Menu.displaymenu();
+					break;
+					
+				case "ls":
+					TodoUtil.listAll(l);
+					break;
 
-			case "ls_name_asc":
-				l.sortByName();
-				isList = true;
-				break;
+				case "ls_name_asc":
+					l.sortByName();
+					System.out.println("제목순으로 정렬하였습니다.");
+					isList = true;
+					break;
 
-			case "ls_name_desc":
-				l.sortByName();
-				l.reverseList();
-				isList = true;
-				break;
+				case "ls_name_desc":
+					l.sortByName();
+					l.reverseList();
+					System.out.println("제목역순으로 정렬하였습니다.");
+					isList = true;
+					break;
+					
+				case "ls_date":
+					l.sortByDate();
+					System.out.println("날짜순으로 정렬하였습니다.");
+					isList = true;
+					break;
+
+				case "exit":
+					quit = true;
+					break;
+
+				default:
+					System.out.println("정확한 명령어를 입력하세요. (명령어 보기 - help)");
+					break;
+				}
 				
-			case "ls_date":
-				l.sortByDate();
-				isList = true;
-				break;
-
-			case "exit":
-				quit = true;
-				break;
-
-			default:
-				System.out.println("please enter one of the above mentioned command");
-				break;
-			}
+				if(isList) l.listAll();
+			} while (!quit);
 			
-			if(isList) l.listAll();
-		} while (!quit);
+			TodoUtil.saveList(l, filename);
+			System.out.println("목록이 " + filename + "에 저장되었습니다.");
+			System.out.println("TodoList가 종료되었습니다.");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
