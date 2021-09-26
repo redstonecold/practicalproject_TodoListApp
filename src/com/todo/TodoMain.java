@@ -16,10 +16,11 @@ public class TodoMain {
 		
 		try {
 
-			BufferedReader bf = new BufferedReader(new InputStreamReader(System.in)); //선언
+			Scanner sc = new Scanner(System.in);
 			TodoList l = new TodoList();
 			boolean isList = false;
 			boolean quit = false;
+			String keyword;
 			String filename = "todolist.txt";
 			
 			System.out.println(filename + "을(를) 로드합니다.");
@@ -27,7 +28,8 @@ public class TodoMain {
 			do {
 				Menu.prompt();
 				isList = false;
-				String choice = bf.readLine();
+				String choice = sc.next();
+//				System.out.println(choice);
 				switch (choice) {
 
 				case "add":
@@ -67,6 +69,27 @@ public class TodoMain {
 					l.sortByDate();
 					System.out.println("날짜순으로 정렬하였습니다.");
 					isList = true;
+					break;
+				
+				case "ls_date_desc":
+					l.sortByDate();
+					l.reverseList();
+					System.out.println("날짜역순으로 정렬하였습니다.");
+					isList = true;
+					break;
+				
+				case "ls_cate" :
+					TodoUtil.listCate(l);
+					break;
+				
+				case "find" :
+					keyword = sc.next().trim();
+					TodoUtil.findKeyword(l,keyword);
+					break;
+				
+				case "find_cate" :
+					keyword = sc.next().trim();
+					TodoUtil.findCateKeyword(l, keyword);
 					break;
 
 				case "exit":
