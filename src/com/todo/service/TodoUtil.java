@@ -131,6 +131,7 @@ public class TodoUtil {
 	public static void listAll(TodoList l) {
 		int count = 0;
 		System.out.println("------전체 목록------");
+		System.out.println("[총 "+l.getList().size()+"개의 일정]");
 		for (TodoItem item : l.getList()) {
 			count ++;
 			System.out.println("[" + item.getCategory() + "] " + count + ". <"+ item.getTitle() + "> " + item.getDesc() + " (마감 : " + item.getDue_date() + ") - " + item.getCurrent_date());
